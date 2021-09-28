@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 
 while True:
     chamber = input("House or Senate?").lower()[0]
@@ -17,7 +18,7 @@ while True:
 url = f'http://www.wvlegislature.gov/{selected_chamber[0]}/roster.cfm'
 r = requests.get(url)
 soup = BeautifulSoup(r.text, "html.parser")
-bill_list = []
+member_list = []
 
 for table_row in soup.select("table.tabborder tr"):
     cells = table_row.findAll('td')
@@ -29,9 +30,11 @@ for table_row in soup.select("table.tabborder tr"):
         member_email = cells[4].text.strip()
         member_phone = cells[5].text.strip()
 
-        bill_info = {'member_name': member_name, 'member_party': member_party, 'member_district': member_district,
+        member_info = {'member_name': member_name, 'member_party': member_party, 'member_district': member_district,
                      'member_address': member_address, 'member_email': member_email, 'member_phone': member_phone}
-        bill_list.append(bill_info)
+        member_list.append(member_info)
 
-        print("{0},{1},{2},{3},{4},{5}".format(member_name, member_party,
-              member_district, member_address, member_email, member_phone))
+members_json = json.dumps(member_list)
+
+with open('members.json', 'a') as outfile:
+    outfile.write(members_json)

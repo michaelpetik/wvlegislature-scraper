@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
+import json
 
 chamber_select = ["h", "s"]
 
@@ -44,12 +45,9 @@ for table_row in soup.select("table.tabborder tr"):
         bill_step = cells[4].text.strip()
         last_action = cells[5].text.strip()
 
-        bill_info = {'bill_number': bill_number, 'bill_title': bill_title, 'bill_status': bill_status,
-                     'bill_committee': bill_committee, 'bill_step': bill_step, 'last_action': last_action}
+        bill_info = {"bill_number": bill_number, "bill_title": bill_title, "bill_status": bill_status,
+                     "bill_committee": bill_committee, "bill_step": bill_step, "last_action": last_action}
         bill_list.append(bill_info)
-
-        print(("{0}, {1}, {2}, {3}, {4}, {5}".format(bill_number, bill_title,
-              bill_status, bill_committee, bill_step, last_action)))
 
     if len(cells) == 5:
         bill_number = cells[0].text.strip()
@@ -58,12 +56,9 @@ for table_row in soup.select("table.tabborder tr"):
         bill_step = cells[3].text.strip()
         last_action = cells[4].text.strip()
 
-        bill_info = {'bill_number': bill_number, 'bill_title': bill_title,
-                     'bill_status': bill_status, 'bill_step': bill_step, 'last_action': last_action}
+        bill_info = {"bill_number": bill_number, "bill_title": bill_title,
+                     "bill_status": bill_status, "bill_step": bill_step, "last_action": last_action}
         bill_list.append(bill_info)
-
-        print(("{0}, {1}, {2}, {3}, {4}".format(bill_number,
-              bill_title, bill_status, bill_step, last_action)))
 
     if len(cells) == 4:
         bill_number = cells[0].text.strip()
@@ -71,9 +66,11 @@ for table_row in soup.select("table.tabborder tr"):
         bill_status = cells[2].text.strip()
         last_action = cells[3].text.strip()
 
-        bill_info = {'bill_number': bill_number, 'bill_title': bill_title,
-                     'bill_status': bill_status, 'last_action': last_action}
+        bill_info = {"bill_number": bill_number, "bill_title": bill_title,
+                     "bill_status": bill_status, "last_action": last_action}
         bill_list.append(bill_info)
 
-        print(("{0}, {1}, {2}, {3}".format(bill_number,
-              bill_title, bill_status, last_action)))
+billstatus_json = json.dumps(bill_list)
+
+with open('billstatus.json', 'a') as outfile:
+    outfile.write(billstatus_json)
