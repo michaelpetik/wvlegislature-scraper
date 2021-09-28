@@ -1,6 +1,7 @@
 import requests
 import urllib
 from bs4 import BeautifulSoup
+from datetime import datetime
 import os
 
 while True:
@@ -20,9 +21,12 @@ url = f"http://www.wvlegislature.gov/{selected_chamber[0]}/roster.cfm"
 r = requests.get(url)
 data = r.text
 soup = BeautifulSoup(data, "lxml")
-image_dir = f"{selected_chamber[1]}/members/headshots/"
+image_dir = f"{str(datetime.now().year)}/{selected_chamber[1]}/members/headshots/"
 
-if os.path.isdir(image_dir) == False:
+if os.path.isdir(image_dir) == True:
+    print("Data for this year has already been collected.")
+    quit()
+else:    
     os.makedirs(image_dir)
 
 for link in soup.find_all('img'):
